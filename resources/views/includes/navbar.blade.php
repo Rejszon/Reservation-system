@@ -18,17 +18,20 @@
         <li>
           <a href="#" class="py-2 px-3 hover:text-blue-700 dark:hover:text-blue-500">Contact</a>
         </li>
-        <!-- Zaloguj się Dropdown -->
       </ul>
+    </div>
+    <div>
       <ul class="text-gray-900 font-medium dark:text-white">
         <li class="relative">
-          <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar" 
-            class="flex items-center py-2 px-3 hover:text-blue-700 dark:hover:text-blue-500">
-            Zaloguj się
-            <svg class="w-2.5 h-2.5 ms-2.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6" aria-hidden="true">
-              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1l4 4 4-4"/>
-            </svg>
-          </button>
+          <a href="{{route('login.form')}}">
+            <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar" 
+              class="flex items-center py-2 px-3 hover:text-blue-700 dark:hover:text-blue-500">
+              Zaloguj się
+              <svg class="w-2.5 h-2.5 ms-2.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6" aria-hidden="true">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1l4 4 4-4"/>
+              </svg>
+            </button>
+          </a>
           <div id="dropdownNavbar" class="z-10 hidden absolute mt-2 bg-white rounded-lg shadow w-44 dark:bg-gray-700">
             <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
               <li>
@@ -39,7 +42,7 @@
               </li>
             </ul>
             <div class="py-1">
-              <a href="#" class="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600">Sign out</a>
+              <a href="{{route('login.signout')}}" class="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600">Wyloguj się</a>
             </div>
           </div>
         </li>

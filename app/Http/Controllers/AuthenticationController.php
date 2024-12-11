@@ -9,15 +9,12 @@ use Illuminate\Support\Facades\Log;
 class AuthenticationController extends Controller
 {
     public function authenticate(Request $request){
-        Log::info("hi");
         $data = $request->validate([
             'email' => ['required','email'],
             'password' => ['required'],
         ]);
-        Log::info("hi1");
 
         if (Auth::attempt($data,$request->remember)) {
-            Log::info("hi");
             $request->session()->regenerate();
             return redirect()->intended('/');
         }

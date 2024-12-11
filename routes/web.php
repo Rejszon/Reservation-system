@@ -9,3 +9,4 @@ Route::get('/login', [AuthenticationController::class,'getLogin'])->name('login.
 
 
 Route::post('/authenticate',[AuthenticationController::class,'authenticate'])->name('login.auth');
+Route::get('/sign-out',[AuthenticationController::class,'logout'])->name('login.signout');
