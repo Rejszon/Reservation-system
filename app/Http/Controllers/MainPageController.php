@@ -10,4 +10,14 @@ class MainPageController extends Controller
         
         return view('main_pages.index');
     }
+
+    public function getServices(){
+        
+        return view('main_pages.services');
+    }
+
+    public function getContact(){
+        
+        return view('main_pages.contact');
+    }
 }

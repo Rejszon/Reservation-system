@@ -6,7 +6,11 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 
-Route::get('/', [MainPageController::class,'getIndex']);
+Route::middleware(['main-group'])->group(function(){
+    Route::get('/', [MainPageController::class,'getIndex'])->name('home');
+    Route::get('/contact', [MainPageController::class,'getContact'])->name('contact');
+    Route::get('/services', [MainPageController::class,'getServices'])->name('services');
+});
 
 // Authorization
 Route::get('/login', [AuthenticationController::class,'getLogin'])->name('login.form');

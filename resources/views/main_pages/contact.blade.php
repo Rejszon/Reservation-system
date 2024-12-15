@@ -1,4 +1,6 @@
 @extends('layouts.main')
 @section('main')
-<p mt-7> main page</p>
+<section>
+<p mt-7> contact page</p>
+<section>
 @endsection
