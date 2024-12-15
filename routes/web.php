@@ -15,8 +15,9 @@ Route::middleware(['main-group'])->group(function(){
 // Authorization
 Route::get('/login', [AuthenticationController::class,'getLogin'])->name('login.form');
 Route::post('/authenticate',[AuthenticationController::class,'authenticate'])->name('login.auth');
+Route::get('/sign-up',[AuthenticationController::class,'getSignUp'])->name('login.signup');
+Route::post('/create-user',[AuthenticationController::class,'createUser'])->name('login.create-user');
 Route::get('/sign-out',[AuthenticationController::class,'logout'])->name('login.signout');
-Route::get('/sign-up',[AuthenticationController::class,'signUp'])->name('login.signout');
 
 //Email verification
 Route::get('/email/verify',function () {
@@ -26,7 +27,7 @@ Route::get('/email/verify',function () {
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
 
-    return redirect('/');
+    return redirect()->route('login.form');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
 Route::post('/email/verification-notification', function (Request $request) {

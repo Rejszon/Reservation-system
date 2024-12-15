@@ -6,7 +6,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Auth\Events\Registered;
 
 class AuthenticationController extends Controller
@@ -40,16 +39,23 @@ class AuthenticationController extends Controller
         return view('panel_pages.login_page');
     }
 
-    public function signUp(Request $request) {
+    public function getSignUp() {
+        return view('authorization_pages.sign_up_page');
+    }
+
+    public function createUser(Request $request) {
         $data = $request->validate([
             'name' => 'required|alpha',
+            'last_name' => 'required|alpha',
             'last_name' => 'required|alpha',
             'email' => 'required|email',
             'password' => 'required|min:6|alpha_dash',
         ]);
+        $data['name'] .= ' '.$data['last_name'];
+        unset($data['last_name']);
         $data['password'] = Hash::make($data['password']);
         $user = User::create($data);
         event(new Registered($user));
-        return redirect('/');
+        return redirect('/email/verify');
     }
 }

@@ -9,9 +9,6 @@
 <body>
     @if ($errors->any())
         <div class="bg-red-200 p-4">
-            @php
-                //dd($errors);
-            @endphp
             {{$errors}}
         </div>
     @endif

@@ -1,0 +1,1 @@
+<p>Email verification sent</p>
