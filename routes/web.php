@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\MainPageController;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
@@ -20,18 +21,7 @@ Route::post('/create-user',[AuthenticationController::class,'createUser'])->name
 Route::get('/sign-out',[AuthenticationController::class,'logout'])->name('login.signout');
 
 //Email verification
-Route::get('/email/verify',function () {
-    return view('authorization_pages.email_verification');
-})->middleware('auth')->name('verification.notice');
-
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $request->fulfill();
-
-    return redirect()->route('login.form');
-})->middleware(['auth', 'signed'])->name('verification.verify');
-
-Route::post('/email/verification-notification', function (Request $request) {
-    $request->user()->sendEmailVerificationNotification();
- 
-    return back()->with('message', 'Na twoje konto email wysłano wiadomość z linkiem aktywacynym');
-})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+Route::get('/email/verify',[AuthenticationController::class,'sendEmailVerification'])->middleware('auth')->name('verification.notice');
+Route::get('/email/verify/{id}/{hash}',[AuthenticationController::class,'verifyEmail'])->middleware(['auth', 'signed'])->name('verification.verify');
+//Resend verification mail
+Route::post('/email/verification-notification',[AuthenticationController::class,'resendEmailVerification'] )->middleware(['auth', 'throttle:6,1'])->name('verification.send');
