@@ -10,6 +10,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "code16/sharp": "^8.6",
         "laravel/framework": "^11.31",
         "laravel/tinker": "^2.9"
     },
@@ -38,6 +39,7 @@
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan vendor:publish --provider=Code16\\Sharp\\SharpServiceProvider --tag=assets --force",
             "@php artisan package:discover --ansi"
         ],
         "post-update-cmd": [
