@@ -18,6 +18,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->appendToGroup('panel-group', [
             ActivePageMiddleware::class,
         ]);
+        $middleware->redirectGuestsTo('/login');
+        $middleware->redirectUsersTo('/profile');
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

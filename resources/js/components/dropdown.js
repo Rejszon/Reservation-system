@@ -6,8 +6,14 @@ if (dropdownHover && dropdownMenu) {
         dropdownMenu.style.display = 'block';
     });
 
-    dropdownMenu.addEventListener('mouseout', function (event) {
-        if (!dropdownHover.contains(event.relatedTarget) && !dropdownMenu.contains(event.relatedTarget)) {
+    dropdownHover.addEventListener('mouseleave', function (event) {
+        if (!dropdownMenu.contains(event.relatedTarget)) {
+            dropdownMenu.style.display = 'none';
+        }
+    });
+
+    dropdownMenu.addEventListener('mouseleave', function (event) {
+        if (!dropdownHover.contains(event.relatedTarget)) {
             dropdownMenu.style.display = 'none';
         }
     });

@@ -37,7 +37,7 @@ class AuthenticationController extends Controller
     }
 
     public function getLogin() {
-        return view('panel_pages.login_page');
+        return view('authorization_pages.login_page');
     }
 
     public function getSignUp() {
@@ -47,7 +47,6 @@ class AuthenticationController extends Controller
     public function createUser(Request $request) {
         $data = $request->validate([
             'name' => 'required|alpha',
-            'last_name' => 'required|alpha',
             'last_name' => 'required|alpha',
             'email' => 'required|email',
             'password' => 'required|min:6|alpha_dash',
@@ -75,6 +74,6 @@ class AuthenticationController extends Controller
     public function verifyEmail(EmailVerificationRequest $request) {
         $request->fulfill();
 
-        return redirect()->route('login.form'); // zmienić na dashboard jak takowy powstanie
+        return redirect()->route('home'); // zmienić na dashboard jak takowy powstanie
     }
 }

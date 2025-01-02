@@ -1,8 +1,25 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    caret-color: transparent;
+}
+html{
+    height: 100%;
+}
 body{
     display: flex;
     flex-direction: column;
     width: 100%;
+    height: 100%;
 }
 section{
     width: 100%;
+}
+.company-bg{
+    background-color: #195ae7;
+}
+.content{
+    flex: 1;
+    padding: 20px;
 }

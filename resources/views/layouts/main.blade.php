@@ -4,10 +4,12 @@
 @vite('resources/css/app.css')
 <body>
     @include('includes.navbar')
-
-    @yield('main')
-
+    <div class="content">
+        @yield('main')
+         
+    </div>
     @include('includes.footer')
+    @stack('scripts')
 </body>
 
 </html>

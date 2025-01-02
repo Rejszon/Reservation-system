@@ -12,9 +12,13 @@ Route::middleware(['main-group'])->group(function(){
     Route::get('/contact', [MainPageController::class,'getContact'])->name('contact');
     Route::get('/services', [MainPageController::class,'getServices'])->name('services');
 });
+Route::middleware(['panel-group','auth','verified'])->group(function(){
+    Route::get('/appointments', [MainPageController::class,'getCalendar'])->name('calendar');
+    Route::get('/profile', [MainPageController::class,'getProfile'])->name('profile');
+});
 
 // Authorization
-Route::get('/login', [AuthenticationController::class,'getLogin'])->name('login.form');
+Route::get('/login', [AuthenticationController::class,'getLogin'])->middleware(['guest'])->name('login.form');
 Route::post('/authenticate',[AuthenticationController::class,'authenticate'])->name('login.auth');
 Route::get('/sign-up',[AuthenticationController::class,'getSignUp'])->name('login.signup');
 Route::post('/create-user',[AuthenticationController::class,'createUser'])->name('login.create-user');
