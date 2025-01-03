@@ -11,8 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->boolean('is_super_user')->default(0)->nullable(false);
+        Schema::create('appointment_types', function (Blueprint $table) {
+            $table->id();
+            $table->text('title');
+            $table->text('description');
+            $table->time('duration', precision: 0);
+            $table->integer('price');
+            $table->timestamps();
         });
     }
 
@@ -21,8 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('is_super_user');
-        });
+        Schema::dropIfExists('appointment_types');
     }
 };
