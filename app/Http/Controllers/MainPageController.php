@@ -38,12 +38,15 @@ class MainPageController extends Controller
                 'title' => $appointment->client->name . ' ('.$appointment->employee->name.')',
                 'start' => $appointment->start_time->setTimezone('UTC')->toIso8601String(),
                 'end' => $appointment->finish_time->setTimezone('UTC')->toIso8601String(),
+                'extendedProps'=> [
+                    'description' => 'opis',
+                ],
             ];
         }
  
         return view('panel_pages.calendar', compact('events'));
     }
-    
+
     public function getProfile(){
  
         return view('panel_pages.profile');

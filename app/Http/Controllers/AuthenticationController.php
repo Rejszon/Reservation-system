@@ -21,7 +21,6 @@ class AuthenticationController extends Controller
             $request->session()->regenerate();
             return redirect()->intended('/');
         }
-
         return back()->withErrors([
             'email' => 'Błędny email lub hasło',
         ])->onlyInput('email');

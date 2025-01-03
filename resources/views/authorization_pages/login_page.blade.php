@@ -9,7 +9,7 @@
 <body>
     @if ($errors->any())
         <div class="bg-red-200 p-4">
-            {{$errors}}
+            {{$errors->first()}}
         </div>
     @endif
         <form action="{{route('login.auth')}}" method="POST" class="max-w-sm mx-auto">
