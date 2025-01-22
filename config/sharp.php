@@ -9,6 +9,8 @@ return [
     'entities' => [
         'users' => \App\Sharp\Users\UsersEntity::class,
         'patient_notes' => \App\Sharp\PatientNotes\PatientNotesEntity::class,
+        'appointments' => \App\Sharp\Appointments\AppointmentsEntity::class,
+        'appointment_types' => \App\Sharp\AppointmentTypes\AppointmentTypesEntity::class,
     ],
     'menu' => \App\Sharp\Menu\Menu::class,
 ];

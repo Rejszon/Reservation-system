@@ -10,6 +10,8 @@ class Menu extends SharpMenu
     {
         return $this
             ->addEntityLink('users', 'Użytkownicy', 'fa-page')
-            ->addEntityLink('patient_notes', 'Uwagi dla pacjentów', 'fa-page');
+            ->addEntityLink('patient_notes', 'Uwagi dla pacjentów', 'fa-page')
+            ->addEntityLink('appointments', 'Wizyty', 'fa-page')
+            ->addEntityLink('appointment_types', 'Usługi', 'fa-page');
     }
 }

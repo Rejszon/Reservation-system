@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Sharp\PatientNotes;
+namespace App\Sharp\AppointmentTypes;
 
 use Code16\Sharp\Utils\Entities\SharpEntity;
 
-class PatientNotesEntity extends SharpEntity
+class AppointmentTypesEntity extends SharpEntity
 {
     protected ?string $list = EntityList::class;
     protected ?string $show = EntityShow::class;
     protected ?string $form = EntityForm::class;
     // protected ?string $policy = Policy::class;
-    protected string $label = "PatientNotes";
+    protected string $label = "Appointment types";
 }

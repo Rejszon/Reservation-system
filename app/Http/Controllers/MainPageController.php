@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointment;
-use Illuminate\Http\Request;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class MainPageController extends Controller
@@ -34,10 +34,13 @@ class MainPageController extends Controller
         }
 
         foreach ($appointments as $appointment) {
+            $duration = $appointment->type->duration;
+            list($hours, $minutes, $seconds) = explode(':',$duration);
+            $end = Carbon::parse($appointment->start_time)->addHours((int)$hours)->addMinutes((int)$minutes)->addSeconds((int)$seconds);
             $events[] = [
                 'title' => $appointment->client->name . ' ('.$appointment->employee->name.')',
                 'start' => $appointment->start_time->setTimezone('UTC')->toIso8601String(),
-                'end' => $appointment->finish_time->setTimezone('UTC')->toIso8601String(),
+                'end' => $end,
                 'extendedProps'=> [
                     'description' => 'opis',
                 ],
