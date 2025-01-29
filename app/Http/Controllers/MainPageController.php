@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Appointment;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use PDO;
 
 class MainPageController extends Controller
 {
@@ -25,33 +26,43 @@ class MainPageController extends Controller
 
     public function getCalendar(){
         $events = [];
+        $schedule = [];
         $currentUser = Auth::user();
-        if ($currentUser->is_super_user) {
-            $appointments = Appointment::where('employee_id',$currentUser->id)->get();
+        $today = Carbon::today();
+        $limit = $today->copy()->addDays(28);
+        if (!$currentUser->is_super_user) {
+            $scheduleAppointments = Appointment::whereBetween('start_time',[$today,$limit])->get();//wyświetlamy najbliższe 4 tygodnie
+            $appointments = $scheduleAppointments->filter(function ($appointment) use($currentUser){
+                return $appointment->client_id == $currentUser->id;
+            });// nie filtrujemy w bazie bo potrzebujemy obu
         }
         else{
-            $appointments = Appointment::where('client_id',$currentUser->id)->get();
+            $appointments = Appointment::where('employee_id',$currentUser->id)->whereBetween('start_time',[$today,$limit])->get();
         }
-
+        
         foreach ($appointments as $appointment) {
-            $duration = $appointment->type->duration;
-            list($hours, $minutes, $seconds) = explode(':',$duration);
-            $end = Carbon::parse($appointment->start_time)->addHours((int)$hours)->addMinutes((int)$minutes)->addSeconds((int)$seconds);
             $events[] = [
                 'title' => $appointment->client->name . ' ('.$appointment->employee->name.')',
                 'start' => $appointment->start_time->setTimezone('UTC')->toIso8601String(),
-                'end' => $end,
+                'end' => $appointment->calculateAppointmentEnd(),
                 'extendedProps'=> [
-                    'description' => 'opis',
+                    'description' => $appointment->type->description,
                 ],
             ];
         }
- 
-        return view('panel_pages.calendar', compact('events'));
+        if (!$currentUser->is_super_user) {
+            foreach ($scheduleAppointments as $appointment) {
+                $schedule[] = [
+                    'start' => $appointment->start_time,
+                    'end' => $appointment->calculateAppointmentEnd(),
+                ];
+            }
+        } 
+        return view('panel_pages.calendar', compact('events','schedule','today','limit'));
     }
 
     public function getProfile(){
- 
+
         return view('panel_pages.profile');
     }
 }

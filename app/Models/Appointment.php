@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Appointment extends Model
@@ -35,5 +36,16 @@ class Appointment extends Model
     public function type()
     {
         return $this->belongsTo('App\Models\AppointmentType','appointment_type');
+    }
+
+    public function calculateAppointmentEnd()
+    {
+        $duration = $this->type->duration;
+        list($hours, $minutes, $seconds) = explode(':', $duration);
+        
+        return Carbon::parse($this->start_time)
+            ->addHours((int) $hours)
+            ->addMinutes((int) $minutes)
+            ->addSeconds((int) $seconds);
     }
 }
