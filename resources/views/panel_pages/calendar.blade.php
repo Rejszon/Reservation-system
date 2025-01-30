@@ -45,7 +45,7 @@ oraz datepicker z flowbite --}}
     </div>
 </div> --}}
 
-<div x-data="{ 
+<div id="appointmentModal" x-data="{ 
     open: false, 
     eventTitle: '', 
     eventDescription: '', 
@@ -53,9 +53,6 @@ oraz datepicker z flowbite --}}
     message: '', 
     errors: {} // Store validation errors here
 }">
-    <!-- Button to Open Modal -->
-    <button @click="open = true; eventTitle = ''; eventDescription = ''; eventId = null; errors = {}" class="bg-blue-500 text-white px-4 py-2">Create Appointment</button>
-
     <!-- Modal -->
     <div class="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50" x-show="open">
         <div class="bg-white p-6 rounded-lg shadow-lg w-96">
@@ -120,8 +117,12 @@ oraz datepicker z flowbite --}}
                     });
 
                     if (!isBlocked) {
-                        //Show Modal
-                        alert("wolne");
+                        let modalComponent = document.getElementById('appointmentModal');
+                        modalComponent.__x.$data.open = true;
+                        modalComponent.__x.$data.eventTitle = '';
+                        modalComponent.__x.$data.eventDescription = '';
+                        modalComponent.__x.$data.eventDate = clickedDate.toISOString().split('T')[0];
+                        } 
                     }
                 },
                 eventClick: function(info){
@@ -135,7 +136,7 @@ oraz datepicker z flowbite --}}
                 buttonText: {
                     today: "Dzisiaj",
                     week: "Tydzień",
-                    year: "Rok",
+                    year: Modal"Rok",
                     month: "Miesiąc",
                 },
                 selectAllow: function(selectInfo) {
