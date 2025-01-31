@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class AppointmentType extends Model
@@ -16,5 +17,9 @@ class AppointmentType extends Model
         'duration',
         'price',
     ];
+    public function getDuration()
+    {
+        return Carbon::parse($this->duration)->format("H:i");
+    }
 
 }

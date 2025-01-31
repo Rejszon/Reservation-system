@@ -14,6 +14,7 @@ Route::middleware(['main-group'])->group(function(){
 });
 Route::middleware(['panel-group','auth','verified'])->group(function(){
     Route::get('/appointments', [MainPageController::class,'getCalendar'])->name('calendar');
+    Route::post('/validate-appointment', [MainPageController::class,'validateAppointment'])->name('appointment.validate');
     Route::get('/profile', [MainPageController::class,'getProfile'])->name('profile');
 });
 

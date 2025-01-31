@@ -5,78 +5,79 @@
 {{-- Czytamy z eventu wszystko i wypełniamy te formy napisz se funkcje showModal czy coś takiego i na Cickc funkcje pokaż jeden z formów 
 potrzebujesz typu wizyty {bo to one ustalają długość wizyty na selectcie fajnie umieścić info o długości wizyty miejsce na opis co sie dzieje itp 
 oraz datepicker z flowbite --}}
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.store('modal', {
+            open: false,
+            mode: 'create',
+            eventType: '',
+            eventComment: '',
+            eventDate: '',
+            eventDuration: '',
+            eventId: null, 
+            message: '', 
+            errors: {},
 
-{{-- <div id="createAppointmentForm" class="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 hidden">
-    <div class="bg-white p-6 rounded-lg shadow-lg w-96">
-        <h3 class="text-xl font-semibold mb-4">Umów wizytę</h3>
-        <form id="calendarForm">
-            <div class="mb-4">
-                <label for="eventTitle" class="block text-sm font-medium text-gray-700">Event Title</label>
-                <input type="text" id="eventTitle" name="eventTitle" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg" required />
-            </div>
-            <div class="mb-4">
-                <label for="eventDescription" class="block text-sm font-medium text-gray-700">Event Description</label>
-                <textarea id="eventDescription" name="eventDescription" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg"></textarea>
-            </div>
-            <div class="flex justify-end">
-                <button type="button" class="px-4 py-2 bg-red-500 text-white rounded-lg" id="cancelBtn">Cancel</button>
-                <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg ml-2">Save</button>
-            </div>
-        </form>
-    </div>
-</div>
-<div id="viewAppointmentForm" class="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 hidden">
-    <div class="bg-white p-6 rounded-lg shadow-lg w-96">
-        <h3 class="text-xl font-semibold mb-4">Form Title</h3>
-        <form id="calendarForm">
-            <div class="mb-4">
-                <label for="eventTitle" class="block text-sm font-medium text-gray-700">Event Title</label>
-                <input type="text" id="eventTitle" name="eventTitle" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg" required />
-            </div>
-            <div class="mb-4">
-                <label for="eventDescription" class="block text-sm font-medium text-gray-700">Event Description</label>
-                <textarea id="eventDescription" name="eventDescription" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg"></textarea>
-            </div>
-            <div class="flex justify-end">
-                <button type="button" class="px-4 py-2 bg-red-500 text-white rounded-lg" id="cancelBtn">Cancel</button>
-                <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg ml-2">Save</button>
-            </div>
-        </form>
-    </div>
-</div> --}}
+            saveEvent() {
+                types = @json($types);
+                duration = types.find(item => item.id == this.eventType).duration
 
-<div id="appointmentModal" x-data="{ 
-    open: false, 
-    eventTitle: '', 
-    eventDescription: '', 
-    eventId: null, 
-    message: '', 
-    errors: {} // Store validation errors here
-}">
-    <!-- Modal -->
-    <div class="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50" x-show="open">
-        <div class="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h3 class="text-xl font-semibold mb-4">Umów wizytę</h3>
+                const eventData = {
+                    type: this.eventType,
+                    comment: this.eventComment,
+                    date: this.eventDate,
+                    duration: duration,
+                };
+                axios.post('/validate-appointment', eventData)
+                    .then(response => {
+                        if (response.data.success) {
+                            this.message = 'Wizyta umówiona';
+                            this.open = false;
+                        } else {
+                            this.errors = response.data.errors;
+                            this.message = 'Błąd';
+                        }
+                    })
+                    .catch(error => {
+                        this.errors = { title: 'Wystąpił błąd' };
+                        this.message = '';
+                    });
+            }
+        });
+    });
+</script>
 
-            <form @submit.prevent="saveEvent">
+<div id="appointmentModal" x-data="$store.modal">
+    <!-- Modal Background -->
+    <div class="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 z-50 pointer-events-auto" x-show="open" x-transition>
+        <div class="bg-white p-6 rounded-lg shadow-lg w-96 z-60">
+            <h3 class="text-xl font-semibold mb-4" x-text="mode === 'create' ? 'Umów wizytę' : 'Szczegóły wizyty'"></h3>
+            <form @submit.prevent="saveEvent" x-show="mode === 'create'">
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700">Event Title</label>
-                    <input type="text" 
-                        x-model="eventTitle" 
+                    <label class="block text-sm font-medium text-gray-700">Typ wizyty</label>
+                    <select
+                        x-model="$store.modal.eventType"
                         class="mt-1 block w-full p-2 border border-gray-300 rounded-lg" 
                         :class="{'border-red-500': errors.title}" 
+                        :disabled="mode === 'view'"
                         required 
-                    />
+                    >
+                    @foreach ($types as $type)
+                        <option value="{{ $type->id }}">{{ $type->title." ".$type->getDuration()." ".$type->price."zl" }}</option>
+                    @endforeach
+                    </select>
                     <!-- Validation error for title -->
                     <p x-show="errors.title" class="text-red-500 text-sm mt-1" x-text="errors.title"></p>
                 </div>
 
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700">Event Description</label>
+                    <label class="block text-sm font-medium text-gray-700">Komentarz dla terapeuty</label>
                     <textarea 
-                        x-model="eventDescription" 
+                        x-model="$store.modal.eventComment"
+                        maxlength="200"
                         class="mt-1 block w-full p-2 border border-gray-300 rounded-lg"
                         :class="{'border-red-500': errors.description}"
+                        :disabled="mode === 'view'"
                     ></textarea>
                     <!-- Validation error for description -->
                     <p x-show="errors.description" class="text-red-500 text-sm mt-1" x-text="errors.description"></p>
@@ -87,24 +88,36 @@ oraz datepicker z flowbite --}}
 
                 <div class="flex justify-end mt-4">
                     <button type="button" @click="open = false" class="px-4 py-2 bg-red-500 text-white rounded-lg">Cancel</button>
-                    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg ml-2">Save</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg ml-2" x-bind:disabled="mode === 'view'">Save</button>
                 </div>
             </form>
+
+            <!-- Read-Only Mode (Event Details) -->
+            <div x-show="mode === 'view'" class="mt-4">
+                <p><strong>Typ wizyty:</strong> <span x-text="eventType"></span></p>
+                <p><strong>Komentarz:</strong> <span class="break-words text-wrap" x-text="eventComment"></span></p>
+                <p><strong>Data:</strong> <span x-text="eventDate"></span></p>
+                <p><strong>Czas trwania:</strong> <span x-text="eventDuration"></span></p>
+                <div class="flex justify-end mt-4">
+                    <button type="button" @click="open = false" class="px-4 py-2 bg-red-500 text-white rounded-lg">Close</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>    
     <script> 
         let blockedDates = @json($schedule);
         blockedDates = blockedDates.map(event => ({
-        start: event.start,
-        end: event.end,
-        display: 'background',
-        color: 'red' // Highlight blocked times
-    }));
+            start: event.start,
+            end: event.end,
+            display: event.background,
+            color: event.color
+        }));
+
         document.addEventListener('DOMContentLoaded', function () {
             var calendarEl = document.getElementById('calendar');
             var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -117,42 +130,37 @@ oraz datepicker z flowbite --}}
                     });
 
                     if (!isBlocked) {
-                        let modalComponent = document.getElementById('appointmentModal');
-                        modalComponent.__x.$data.open = true;
-                        modalComponent.__x.$data.eventTitle = '';
-                        modalComponent.__x.$data.eventDescription = '';
-                        modalComponent.__x.$data.eventDate = clickedDate.toISOString().split('T')[0];
-                        } 
+                        Alpine.store('modal').open = true;
+                        Alpine.store('modal').mode = 'create';
+                        Alpine.store('modal').eventType = 1; //Tak nie wygląda to najlepiej ale jest tak dlatego że domyślnie typ jest na id
+                        Alpine.store('modal').eventComment = '';
+                        Alpine.store('modal').eventDuration = '';
+                        Alpine.store('modal').eventDate = clickedDate.toISOString();
                     }
                 },
-                eventClick: function(info){
-                    console.log(info.event.extendedProps);
-                    alert('alert2');
+                eventClick: function(selectInfo) {
+                    Alpine.store('modal').open = true;
+                    Alpine.store('modal').mode = 'view';
+                    Alpine.store('modal').eventType = selectInfo.event.title;
+                    Alpine.store('modal').eventComment = selectInfo.event.extendedProps.comment;
+                    Alpine.store('modal').eventDuration = selectInfo.event.extendedProps.duration;
+                    Alpine.store('modal').eventDate = selectInfo.event.start.toLocaleString('pl-PL', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                }).replace(',', '').replace('/', '.').replace('/', '.');
                 },
                 height: 'auto',
                 initialView: 'timeGridWeek',
-                slotMinTime: '8:00:00',
+                slotMinTime: '08:00:00',
                 slotMaxTime: '20:00:00',
                 buttonText: {
                     today: "Dzisiaj",
                     week: "Tydzień",
-                    year: Modal"Rok",
+                    year: "Rok",
                     month: "Miesiąc",
-                },
-                selectAllow: function(selectInfo) {
-                    let start = selectInfo.start
-                    let end = selectInfo.end;
-                    let isBlocked = blockedDates.some(event => {
-                        let eventStart = new Date(event.start);
-                        let eventEnd = new Date(event.end);
-
-                        // Return true if there is an overlap
-                        return (start >= eventStart && start < eventEnd) || 
-                            (end > eventStart && end <= eventEnd) || 
-                            (start <= eventStart && end >= eventEnd);
-                    });
-
-                    return !isBlocked;
                 },
                 locale: 'pl',
                 firstDay: 1,
@@ -165,14 +173,15 @@ oraz datepicker z flowbite --}}
                     center: 'title',
                     right: 'prev,next',
                 },
-                validRange:{
+                validRange: {
                     start: @json($today),
                     end: @json($limit),
                 }
             });
+
             calendar.render();
         });
-        
     </script>
 @endpush
+
 @endsection
