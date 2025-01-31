@@ -129,7 +129,7 @@ class MainPageController extends Controller
             return response()->json([
                 'success' => false,
                 'errors' => $validator->errors(),
-            ]);
+            ], 400);
         }
         // If validation passes, create the appointment
         $appointment = new Appointment();
